@@ -4,10 +4,9 @@
 //! we want to pass Archives around in channels but we do not want
 //! to deal with complicated lifetimes.
 
-use core::fmt::Debug;
-use core::{marker::PhantomData, ops::Deref};
+use core::{fmt::Debug, marker::PhantomData, ops::Deref};
 
-//use memmap2::{Mmap, MmapMut};
+// use memmap2::{Mmap, MmapMut};
 use rkyv::{
     api::high::HighValidator, bytecheck::CheckBytes, rancor::Source, util::AlignedVec, Archive, Portable, seal::Seal,
 };
@@ -315,8 +314,6 @@ unsafe impl StableBytes for Vec<u8> {
         self.as_ref()
     }
 }
-
-
 
 unsafe impl StableBytesMut for Box<[u8]> {
     fn bytes_mut(&mut self) -> &mut [u8] {
