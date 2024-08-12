@@ -5,11 +5,11 @@
 //! to deal with complicated lifetimes.
 
 use core::fmt::Debug;
-use std::{marker::PhantomData, ops::Deref, rc::Rc, sync::Arc};
+use core::{marker::PhantomData, ops::Deref};
 
+//use memmap2::{Mmap, MmapMut};
 use rkyv::{
-    api::high::HighValidator, bytecheck::CheckBytes, seal::Seal,
-    util::AlignedVec, Archive, Portable,
+    api::high::HighValidator, bytecheck::CheckBytes, rancor::Source, util::AlignedVec, Archive, Portable, seal::Seal,
 };
 
 /// An owned archive type.
@@ -53,7 +53,7 @@ impl<T, C> OwnedArchive<T, C> {
     where
         T: Archive,
         T::Archived: Portable + for<'a> CheckBytes<HighValidator<'a, E>>,
-        E: rkyv::rancor::Source,
+        E: Source,
         C: StableBytes,
     {
         // Here we check if the bytes are good. If so, we will
@@ -89,7 +89,7 @@ impl<T, C> OwnedArchive<T, C> {
     /// assert_eq!(*hello, 3);
     /// assert_eq!(owned_archive.hello, 3);
     /// ```
-    pub fn get_mut(&mut self) -> Seal<T::Archived>
+    pub fn get_mut(&mut self) -> Seal<'_, T::Archived>
     where
         T: Archive,
         T::Archived: Portable,
@@ -310,17 +310,7 @@ unsafe impl StableBytes for Vec<u8> {
     }
 }
 
-unsafe impl StableBytes for Arc<[u8]> {
-    fn bytes(&self) -> &[u8] {
-        self.as_ref()
-    }
-}
 
-unsafe impl StableBytes for Rc<[u8]> {
-    fn bytes(&self) -> &[u8] {
-        self.as_ref()
-    }
-}
 
 unsafe impl StableBytesMut for Box<[u8]> {
     fn bytes_mut(&mut self) -> &mut [u8] {

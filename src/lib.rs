@@ -24,3 +24,7 @@
 "#)]
 
 pub mod owned;
+#[cfg(feature = "memmap2-0_9")]
+mod memmap2;
+#[cfg(feature = "std")]
+mod std;
