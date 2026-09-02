@@ -6,9 +6,9 @@
 
 use core::{fmt::Debug, marker::PhantomData, ops::Deref};
 
-// use memmap2::{Mmap, MmapMut};
 use rkyv::{
-    api::high::HighValidator, bytecheck::CheckBytes, rancor::Source, util::AlignedVec, Archive, Portable, seal::Seal,
+    api::high::HighValidator, bytecheck::CheckBytes, rancor::Source,
+    seal::Seal, util::AlignedVec, Archive, Portable,
 };
 
 /// An owned archive type.
